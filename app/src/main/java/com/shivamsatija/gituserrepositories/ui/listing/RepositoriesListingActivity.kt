@@ -2,10 +2,8 @@ package com.shivamsatija.gituserrepositories.ui.listing
 
 import android.os.Bundle
 import com.shivamsatija.gituserrepositories.R
-import com.shivamsatija.gituserrepositories.di.BaseUrl
 import com.shivamsatija.gituserrepositories.di.component.ActivityComponent
 import com.shivamsatija.gituserrepositories.ui.base.BaseActivity
-import javax.inject.Inject
 
 class RepositoriesListingActivity
     : BaseActivity() {

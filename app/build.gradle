@@ -70,16 +70,18 @@ dependencies {
     def loggingInterceptorVersion = "4.2.1"
     implementation "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
 
-    /* Testing */
+    /* Unit Testing */
     testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-inline:2.7.13'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:core:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    testImplementation 'org.mockito:mockito-core:2.13.0'
     androidTestImplementation 'org.mockito:mockito-android:2.13.0'
 
+    /* Ui Testing */
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.2.1"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
 }
