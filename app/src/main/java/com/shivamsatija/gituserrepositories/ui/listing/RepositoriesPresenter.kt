@@ -45,9 +45,9 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
     }
 
     override fun detachView() {
-        super.detachView()
         if (!compositeDisposable.isDisposed) {
             compositeDisposable.dispose()
         }
+        super.detachView()
     }
 }

@@ -17,7 +17,7 @@ interface ApiService {
     @GET("users/{username}/repos")
     fun fetchRepositories(
         @Path("username") username: String,
-        @Query("type") type: String = "owner",
-        @Query("sort") sort: String = "updated"
+        @Query("type") type: String = "\"owner\"",
+        @Query("sort") sort: String = "\"updated\""
     ) : Single<ArrayList<Repository>>
 }
