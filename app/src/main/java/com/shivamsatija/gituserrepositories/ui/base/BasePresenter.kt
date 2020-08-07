@@ -1,6 +1,6 @@
 package com.shivamsatija.gituserrepositories.ui.base
 
-class BasePresenter<V : BaseMvpView> : BaseMvpPresenter<V> {
+open class BasePresenter<V : BaseMvpView> : BaseMvpPresenter<V> {
 
     private var view: V? = null
 
