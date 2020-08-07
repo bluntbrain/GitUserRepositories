@@ -8,7 +8,9 @@ interface RepositoriesMvpView : BaseMvpView {
 
     fun setUser(user: User)
 
-    fun onUserNotFound()
+    fun onUserSearchFailed()
 
     fun updateUserRepositories(repositories: ArrayList<Repository>)
+
+    fun onFetchUserRepositoriesFailed()
 }

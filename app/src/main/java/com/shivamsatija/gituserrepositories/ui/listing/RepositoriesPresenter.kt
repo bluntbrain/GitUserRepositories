@@ -23,13 +23,25 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
                 .subscribe({
                     getView()!!.setUser(it)
                 }, {
-                    getView()!!.onUserNotFound()
+                    getView()!!.onUserSearchFailed()
                 })
         )
     }
 
     override fun fetchUserRepositories(username: String) {
 
+        if (!isViewAttached()) return
+
+        compositeDisposable.add(
+            dataManager.fetchUserRepositories(username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    getView()!!.updateUserRepositories(it)
+                }, {
+                    getView()!!.onFetchUserRepositoriesFailed()
+                })
+        )
     }
 
     override fun detachView() {

@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import com.shivamsatija.gituserrepositories.data.DataManager
+import com.shivamsatija.gituserrepositories.data.model.Repository
 import com.shivamsatija.gituserrepositories.data.model.User
 import com.shivamsatija.gituserrepositories.util.RxSchedulersOverrideRule
 import io.reactivex.Single
@@ -29,6 +30,9 @@ class RepositoriesPresenterTest {
 
     private val user: User = mock()
 
+    private val repository1: Repository = mock()
+    private val repository2: Repository = mock()
+
     private val repositoriesMvpView: RepositoriesMvpView = mock()
 
     private lateinit var presenter: RepositoriesPresenter<RepositoriesMvpView>
@@ -40,8 +44,7 @@ class RepositoriesPresenterTest {
     }
 
     @Test
-    fun shouldSearchUserFromRemote() {
-        // Haven't fetched from network yet
+    fun shouldSearchUser() {
         whenever(dataManager.searchUser(TEST_USER_NAME))
             .doReturn(Single.just(user))
 
@@ -49,5 +52,19 @@ class RepositoriesPresenterTest {
 
         verify(dataManager).searchUser(TEST_USER_NAME)
         verify(repositoriesMvpView).setUser(user)
+    }
+
+    @Test
+    fun shouldFetchUserRepositories() {
+
+        val sampleResponse = arrayListOf(repository1, repository2)
+
+        whenever(dataManager.fetchUserRepositories(TEST_USER_NAME))
+            .doReturn(Single.just(sampleResponse))
+
+        presenter.fetchUserRepositories(TEST_USER_NAME)
+
+        verify(dataManager).fetchUserRepositories(TEST_USER_NAME)
+        verify(repositoriesMvpView).updateUserRepositories(sampleResponse)
     }
 }
