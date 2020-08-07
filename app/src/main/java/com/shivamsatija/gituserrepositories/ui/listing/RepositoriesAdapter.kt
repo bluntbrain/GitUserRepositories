@@ -9,7 +9,8 @@ import com.shivamsatija.gituserrepositories.data.model.Repository
 import kotlinx.android.synthetic.main.layout_item_user_repository.view.*
 
 class RepositoriesAdapter(
-    var repositories: ArrayList<Repository>
+    var repositories: ArrayList<Repository>,
+    var interaction: (String?) -> Unit
 ) : RecyclerView.Adapter<RepositoriesAdapter.RepositoryViewHolder>() {
 
     fun addRepositories(toClear: Boolean, repositories: ArrayList<Repository>) {
@@ -31,6 +32,10 @@ class RepositoriesAdapter(
 
     override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
         holder.bindRepository(repositories[position])
+
+        holder.itemView.setOnClickListener {
+            interaction(repositories[position].htmlUrl)
+        }
     }
 
     class RepositoryViewHolder(itemView: View)

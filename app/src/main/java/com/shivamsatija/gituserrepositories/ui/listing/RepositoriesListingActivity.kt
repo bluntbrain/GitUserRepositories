@@ -1,9 +1,14 @@
 package com.shivamsatija.gituserrepositories.ui.listing
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_repositories_listing.*
 import kotlinx.android.synthetic.main.layout_user_detail.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 
 class RepositoriesListingActivity
     : BaseActivity(), RepositoriesMvpView {
@@ -87,7 +93,9 @@ class RepositoriesListingActivity
 
     private fun setupRecyclerView() {
 
-        adapter = RepositoriesAdapter(ArrayList(0))
+        adapter = RepositoriesAdapter(ArrayList(0)) { url ->
+            openUrl(url)
+        }
 
         rvRepositories.layoutManager = LinearLayoutManager(this)
         rvRepositories.adapter = adapter
@@ -133,6 +141,21 @@ class RepositoriesListingActivity
         tvUserName.text = user.name
         tvUserBlog.text = user.blog
         tvUserLocation.text = user.location
+    }
+
+    private fun openUrl(url: String?) {
+        if (!TextUtils.isEmpty(url)) {
+            try {
+                val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                startActivity(myIntent)
+            } catch (e: ActivityNotFoundException) {
+                Toast.makeText(this,
+                    "No application can handle this request."
+                            + " Please install a web browser", Toast.LENGTH_LONG
+                ).show()
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onDestroy() {
