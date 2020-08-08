@@ -45,7 +45,7 @@ class DataManagerTest {
         whenever(apiService.fetchRepositories(TEST_USER_NAME))
             .doReturn(Single.just(arrayListOf(repository1, repository2)))
 
-        val observer = dataManager.fetchUserRepositories(TEST_USER_NAME).test()
+        val observer = dataManager.fetchUserRepositories(TEST_USER_NAME, 0, 10).test()
         observer.assertComplete()
     }
 }

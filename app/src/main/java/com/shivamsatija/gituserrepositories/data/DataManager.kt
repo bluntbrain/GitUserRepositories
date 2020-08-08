@@ -15,6 +15,6 @@ class DataManager @Inject constructor(
     fun searchUser(username: String) : Single<User>
             = service.searchUser(username)
 
-    fun fetchUserRepositories(username: String) : Single<ArrayList<Repository>>
-            = service.fetchRepositories(username)
+    fun fetchUserRepositories(username: String, page: Int, perPage: Int) : Single<ArrayList<Repository>>
+            = service.fetchRepositories(username, page = page, perPage = perPage)
 }

@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.shivamsatija.gituserrepositories.R
@@ -46,6 +47,8 @@ class RepositoriesListingActivity
     private var disposable: CompositeDisposable = CompositeDisposable()
     private var searchSubject: PublishSubject<String?> = PublishSubject.create()
 
+    private var currentUser: User? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter.attachView(this)
@@ -76,7 +79,7 @@ class RepositoriesListingActivity
         })
 
         disposable.add(
-            searchSubject.debounce(250, TimeUnit.MILLISECONDS)
+            searchSubject.debounce(750, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ query ->
@@ -97,25 +100,38 @@ class RepositoriesListingActivity
             openUrl(url)
         }
 
-        rvRepositories.layoutManager = LinearLayoutManager(this)
-        rvRepositories.adapter = adapter
-        rvRepositories.addItemDecoration(
-            DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
+        rvRepositories.apply {
+            layoutManager = LinearLayoutManager(this@RepositoriesListingActivity)
+            adapter = this@RepositoriesListingActivity.adapter
+            addItemDecoration(DividerItemDecoration(this@RepositoriesListingActivity, DividerItemDecoration.VERTICAL).apply {
                 ContextCompat.getDrawable(
                     this@RepositoriesListingActivity,
                     R.drawable.drawable_divider
                 )?.let {
                     setDrawable(it)
                 }
-            }
-        )
-
+            })
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val linearLayoutManager: LinearLayoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition()
+                    if (lastVisibleItemPosition + 1 == recyclerView.adapter?.itemCount
+                        && !presenter.isDataLoading() && presenter.isMoreData()) {
+                        currentUser?.let { currentUser ->
+                            presenter.fetchUserRepositories(currentUser.login!!, false)
+                        }
+                    }
+                }
+            })
+        }
     }
 
     override fun setUser(user: User) {
+        currentUser = user
         cvUserDetail.visibility = View.VISIBLE
         bindUser(user)
-        presenter.fetchUserRepositories(user.login!!)
+        presenter.fetchUserRepositories(user.login!!, true)
     }
 
     override fun onUserSearchFailed() {
@@ -123,12 +139,14 @@ class RepositoriesListingActivity
         adapter?.repositories?.clear()
     }
 
-    override fun updateUserRepositories(repositories: ArrayList<Repository>) {
-        adapter?.addRepositories(true, repositories)
+    override fun updateUserRepositories(repositories: ArrayList<Repository>, toClear: Boolean) {
+        adapter?.addRepositories(toClear, repositories)
     }
 
     override fun onFetchUserRepositoriesFailed() {
-
+        if (adapter?.itemCount == 0) {
+            showToast("No repositories found for this user.")
+        }
     }
 
     private fun bindUser(user: User) {

@@ -10,7 +10,7 @@ interface RepositoriesMvpView : BaseMvpView {
 
     fun onUserSearchFailed()
 
-    fun updateUserRepositories(repositories: ArrayList<Repository>)
+    fun updateUserRepositories(repositories: ArrayList<Repository>, toClear: Boolean)
 
     fun onFetchUserRepositoriesFailed()
 }

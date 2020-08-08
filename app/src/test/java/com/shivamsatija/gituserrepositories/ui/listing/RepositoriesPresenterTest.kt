@@ -13,6 +13,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyObject
 
 class RepositoriesPresenterTest {
 
@@ -59,12 +60,12 @@ class RepositoriesPresenterTest {
 
         val sampleResponse = arrayListOf(repository1, repository2)
 
-        whenever(dataManager.fetchUserRepositories(TEST_USER_NAME))
+        whenever(dataManager.fetchUserRepositories(TEST_USER_NAME, 0 ,10))
             .doReturn(Single.just(sampleResponse))
 
-        presenter.fetchUserRepositories(TEST_USER_NAME)
+        presenter.fetchUserRepositories(TEST_USER_NAME, true)
 
-        verify(dataManager).fetchUserRepositories(TEST_USER_NAME)
-        verify(repositoriesMvpView).updateUserRepositories(sampleResponse)
+        verify(dataManager).fetchUserRepositories(TEST_USER_NAME, 0 ,10)
+        verify(repositoriesMvpView).updateUserRepositories(sampleResponse, true)
     }
 }

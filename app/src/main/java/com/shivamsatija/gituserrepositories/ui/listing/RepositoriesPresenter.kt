@@ -12,6 +12,11 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
     var compositeDisposable: CompositeDisposable
 ) : BasePresenter<V>(), RepositoriesMvpPresenter<V> {
 
+    var page = 0
+    var countPerPage = 10
+    private var hasMoreData = true
+    private var isDataLoading = false
+
     override fun searchUser(username: String) {
 
         if (!isViewAttached()) return
@@ -28,16 +33,29 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
         )
     }
 
-    override fun fetchUserRepositories(username: String) {
+    override fun fetchUserRepositories(username: String, toClear: Boolean) {
 
         if (!isViewAttached()) return
 
+        setDataLoading(true)
+
+        if (toClear) {
+            resetValues()
+        }
+
         compositeDisposable.add(
-            dataManager.fetchUserRepositories(username)
+            dataManager.fetchUserRepositories(username, page, countPerPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    getView()!!.updateUserRepositories(it)
+                .subscribe({ repositories ->
+                    setDataLoading(false)
+                    if (repositories.size < countPerPage) {
+                        setHasMoreData(false)
+                    } else {
+                        setHasMoreData(true)
+                        page++
+                    }
+                    getView()!!.updateUserRepositories(repositories, toClear)
                 }, {
                     getView()!!.onFetchUserRepositoriesFailed()
                 })
@@ -49,5 +67,22 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
             compositeDisposable.dispose()
         }
         super.detachView()
+    }
+
+    private fun resetValues() {
+        page = 0
+        setHasMoreData(true)
+    }
+
+    override fun isMoreData(): Boolean = hasMoreData
+
+    override fun setHasMoreData(moreData: Boolean) {
+        hasMoreData = moreData
+    }
+
+    override fun isDataLoading(): Boolean = isDataLoading
+
+    override fun setDataLoading(dataLoading: Boolean) {
+        isDataLoading = dataLoading
     }
 }

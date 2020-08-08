@@ -18,6 +18,8 @@ interface ApiService {
     fun fetchRepositories(
         @Path("username") username: String,
         @Query("type") type: String = "\"owner\"",
-        @Query("sort") sort: String = "\"updated\""
+        @Query("sort") sort: String = "\"updated\"",
+        @Query("page") page: Int = 0,
+        @Query("per_page") perPage: Int = 10
     ) : Single<ArrayList<Repository>>
 }
