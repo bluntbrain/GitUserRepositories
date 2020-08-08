@@ -28,6 +28,7 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
                 .subscribe({
                     getView()!!.setUser(it)
                 }, {
+                    getView()!!.showToast(it.message!!)
                     getView()!!.onUserSearchFailed()
                 })
         )
@@ -57,6 +58,7 @@ class RepositoriesPresenter<V : RepositoriesMvpView> @Inject constructor(
                     }
                     getView()!!.updateUserRepositories(repositories, toClear)
                 }, {
+                    getView()!!.showToast(it.message!!)
                     getView()!!.onFetchUserRepositoriesFailed()
                 })
         )

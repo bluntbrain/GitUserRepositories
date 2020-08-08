@@ -1,5 +1,6 @@
 package com.shivamsatija.gituserrepositories.ui.listing
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -149,6 +150,7 @@ class RepositoriesListingActivity
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bindUser(user: User) {
 
         Glide.with(ivUserImage.context)
@@ -156,9 +158,9 @@ class RepositoriesListingActivity
             .apply(RequestOptions().circleCrop())
             .into(ivUserImage)
 
-        tvUserName.text = user.name
-        tvUserBlog.text = user.blog
-        tvUserLocation.text = user.location
+        tvUserName.text = if (TextUtils.isEmpty(user.name)) user.login else user.name
+        tvUserBlog.text = if (TextUtils.isEmpty(user.blog)) user.htmlUrl else user.blog
+        tvUserLocation.text = "${user.followers ?: 0} followers"
     }
 
     private fun openUrl(url: String?) {
