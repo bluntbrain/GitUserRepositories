@@ -2,7 +2,6 @@ package com.shivamsatija.gituserrepositories.ui.listing
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +9,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -166,8 +166,11 @@ class RepositoriesListingActivity
     private fun openUrl(url: String?) {
         if (!TextUtils.isEmpty(url)) {
             try {
-                val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(myIntent)
+//                val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+//                startActivity(myIntent)
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(this, Uri.parse(url))
             } catch (e: ActivityNotFoundException) {
                 Toast.makeText(this,
                     "No application can handle this request."
